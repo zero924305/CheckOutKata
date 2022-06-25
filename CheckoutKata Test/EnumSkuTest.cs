@@ -2,7 +2,7 @@ using Xunit;
 
 namespace CheckoutKata_Test
 {
-    public class UnitTest1
+    public class EnumSkuTest
     {
         public enum Sku
         { 
