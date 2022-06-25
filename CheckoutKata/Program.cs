@@ -1,2 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using CheckoutKata;
+
+string items = "ABCD";
+
+var checkOut = new CheckOut();
+
+checkOut.Scan(items);
+Console.WriteLine(checkOut.TotalPrice);
