@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using CheckoutKata;
 
 namespace CheckoutKata_Test
 {
@@ -35,10 +36,29 @@ namespace CheckoutKata_Test
         {
             var itemList = ScanItemFunc(items);
 
-            var actual = CountTotalItem(itemList);
+            var actual = CountAndGroupTotalItem(itemList);
 
-            Assert.Equal(expectTotalItem, actual);
+            //Assert.Equal(expectTotalItem, actual.Values);
         }
+
+        [Theory]
+        [InlineData("ABCDAAADC", 300)]
+        [InlineData("ABCDAAADCAAAD", 465)]
+        [InlineData("ABCD", 115)]
+        [InlineData("AAAAAAAAAAA", 550)]
+        public void Calculate_Total_Price(string items, int totalPrice)
+        {
+            var itemlist = ScanItemFunc(items);
+
+            var groupItem = CountAndGroupTotalItem(itemlist);
+
+            var actual = CalculateTotalPrice(groupItem);
+
+            Assert.Equal(totalPrice, actual);
+
+        }
+
+
 
         private static List<string> ScanItemFunc(string items)
         {
@@ -53,11 +73,39 @@ namespace CheckoutKata_Test
             return result;
         }
 
-        private static int CountTotalItem(List<string> itemList)
+        private static Dictionary<string,int> CountAndGroupTotalItem(List<string> itemList)
         {
-            return itemList.Count;
+            var result = itemList
+                            .GroupBy(k => k)
+                            .ToDictionary(k => k.Key, v => v.Count());
+            return result;
+
         }
 
+        private static int CalculateTotalPrice(Dictionary<string,int> items)
+        {
+            var result = 0;
 
+            foreach(var item in items)
+            {
+                var price = GetItemPriceFromSku(item.Key);
+
+                result += price * item.Value;
+            }
+            return result;
+        }
+
+        private static int GetItemPriceFromSku(string key)
+        {
+            var result = key switch
+            {
+                var x when x.Equals(nameof(EnumSku.Sku.A)) => (int)EnumSku.Sku.A,
+                var x when x.Equals(nameof(EnumSku.Sku.B)) => (int)EnumSku.Sku.B,
+                var x when x.Equals(nameof(EnumSku.Sku.C)) => (int)EnumSku.Sku.C,
+                var x when x.Equals(nameof(EnumSku.Sku.D)) => (int)EnumSku.Sku.D,
+                _ => 0
+            };
+            return result;
+        }
     }
 }
