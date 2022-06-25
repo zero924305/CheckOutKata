@@ -1,3 +1,3 @@
 CheckoutKata
 
-Funish Time : 50min
+Funish Time : 45min
